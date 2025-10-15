@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4"><i class="bi bi-hospital"></i> Bienvenido a Clínica Salud Vital</h1>
+            <p class="lead">Sistema integral de gestión de pacientes, médicos y atenciones médicas</p>
+            <hr class="my-4">
+            <p>Administra de forma eficiente todas las operaciones de la clínica desde un solo lugar.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-people fs-1"></i>
+                <h3 class="card-title mt-2">{{ total_pacientes }}</h3>
+                <p class="card-text">Pacientes Activos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge fs-1"></i>
+                <h3 class="card-title mt-2">{{ total_medicos }}</h3>
+                <p class="card-text">Médicos Activos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-heart-pulse fs-1"></i>
+                <h3 class="card-title mt-2">{{ total_especialidades }}</h3>
+                <p class="card-text">Especialidades</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-check fs-1"></i>
+                <h3 class="card-title mt-2">{{ total_consultas }}</h3>
+                <p class="card-text">Consultas Totales</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Módulos de gestión -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <h2><i class="bi bi-grid-3x3"></i> Módulos de Gestión</h2>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-heart-pulse text-primary"></i> Especialidades</h5>
+                <p class="card-text">Gestiona las especialidades médicas disponibles en la clínica.</p>
+                <a href="{% url 'especialidad_lista' %}" class="btn btn-primary btn-sm">Ver Especialidades</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people text-success"></i> Pacientes</h5>
+                <p class="card-text">Administra la información de los pacientes de la clínica.</p>
+                <a href="{% url 'paciente_lista' %}" class="btn btn-success btn-sm">Ver Pacientes</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-person-badge text-info"></i> Médicos</h5>
+                <p class="card-text">Gestiona el personal médico y sus especialidades.</p>
+                <a href="{% url 'medico_lista' %}" class="btn btn-info btn-sm">Ver Médicos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-calendar-check text-warning"></i> Consultas</h5>
+                <p class="card-text">Administra las consultas médicas y sus diagnósticos.</p>
+                <a href="{% url 'consulta_lista' %}" class="btn btn-warning btn-sm">Ver Consultas</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-clipboard-plus text-danger"></i> Tratamientos</h5>
+                <p class="card-text">Gestiona los tratamientos asociados a las consultas.</p>
+                <a href="{% url 'tratamiento_lista' %}" class="btn btn-danger btn-sm">Ver Tratamientos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-capsule text-secondary"></i> Medicamentos</h5>
+                <p class="card-text">Administra el catálogo de medicamentos disponibles.</p>
+                <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary btn-sm">Ver Medicamentos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-file-medical text-dark"></i> Recetas Médicas</h5>
+                <p class="card-text">Gestiona las recetas médicas emitidas.</p>
+                <a href="{% url 'receta_lista' %}" class="btn btn-dark btn-sm">Ver Recetas</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card border-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-book text-primary"></i> Documentación API</h5>
+                <p class="card-text">Accede a la documentación interactiva de la API REST.</p>
+                <a href="/api/docs/" target="_blank" class="btn btn-outline-primary btn-sm">Ver Documentación</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card border-dark">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-gear text-dark"></i> Administración</h5>
+                <p class="card-text">Accede al panel de administración de Django.</p>
+                <a href="/admin/" target="_blank" class="btn btn-outline-dark btn-sm">Panel Admin</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

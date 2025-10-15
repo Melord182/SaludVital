@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Paciente - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar Eliminación</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¿Está seguro de que desea eliminar este paciente?</strong>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Información del Paciente:</h5>
+                        <p class="card-text"><strong>Nombre:</strong> {{ paciente.nombre_completo }}</p>
+                        <p class="card-text"><strong>RUT:</strong> {{ paciente.rut }}</p>
+                        <p class="card-text"><strong>Previsión:</strong> {{ paciente.get_prevision_display }}</p>
+                        <p class="card-text"><strong>Fecha de Nacimiento:</strong> {{ paciente.fecha_nacimiento|date:"d/m/Y" }}</p>
+                        <p class="card-text"><strong>Teléfono:</strong> {{ paciente.telefono }}</p>
+
+                    </div>
+                </div>
+                
+                <p class="text-danger">
+                    <small><strong>Advertencia:</strong> Esta acción no se puede deshacer y puede afectar consultas asociadas.</small>
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'paciente_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

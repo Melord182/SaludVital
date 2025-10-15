@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Tratamientos - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-clipboard-plus"></i> Tratamientos</h2>
+    <a href="{% url 'tratamiento_crear' %}" class="btn btn-danger">
+        <i class="bi bi-plus-circle"></i> Nuevo Tratamiento
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Consulta</th>
+                        <th>Paciente</th>
+                        <th>Médico</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tratamiento in tratamientos %}
+                    <tr>
+                        <td><strong>#{{ tratamiento.id }}</strong></td>
+                        <td>Consulta #{{ tratamiento.consulta.id }}</td>
+                        <td>{{ tratamiento.consulta.paciente.nombre_completo }}</td>
+                        <td>{{ tratamiento.consulta.medico.nombre_completo }}</td>
+                        <td>{{ tratamiento.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if tratamiento.fecha_fin %}
+                                {{ tratamiento.fecha_fin|date:"d/m/Y" }}
+                            {% else %}
+                                <span class="text-muted">En curso</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tratamiento.activo %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Finalizado</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'tratamiento_editar' tratamiento.pk %}" 
+                               class="btn btn-sm btn-warning" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'tratamiento_eliminar' tratamiento.pk %}" 
+                               class="btn btn-sm btn-danger" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No hay tratamientos registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Receta - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Receta</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="paciente" class="form-label">Paciente *</label>
+                        <select class="form-select" id="paciente" name="paciente" required>
+                            <option value="" disabled selected>Seleccione un paciente</option>
+                            {% for paciente in pacientes %}
+                                <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="medico" class="form-label">Médico *</label>
+                        <select class="form-select" id="medico" name="medico" required>
+                            <option value="" disabled selected>Seleccione un médico</option>
+                            {% for medico in medicos %}
+                                <option value="{{ medico.id }}">{{ medico.nombre }} {{ medico.apellido }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="medicamentos" class="form-label">Medicamentos *</label>
+                        <select class="form-select" id="medicamentos" name="medicamentos" multiple required>
+                            {% for medicamento in medicamentos %}
+                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }} - {{ medicamento.dosis }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Mantenga presionada la tecla Ctrl (Cmd en Mac) para seleccionar múltiples medicamentos.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="instrucciones" class="form-label">Instrucciones *</label>
+                        <textarea class="form-control" id="instrucciones" name="instrucciones" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha_emision" class="form-label">Fecha de Emisión *</label>
+                        <input type="date" class="form-control" id="fecha_emision" name="fecha_emision" required>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
