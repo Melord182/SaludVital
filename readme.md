@@ -327,7 +327,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'clinica_salud_vital_db',
-        'USER': 'postgres',  # o 'clinica_user'
+        'USER': 'postgres', 
         'PASSWORD': 'tu_password',
         'HOST': 'localhost',
         'PORT': '5432',
