@@ -1,0 +1,16 @@
+{% extends "salud/base.html" %}{% block content %}
+<h1>Especialidades</h1>
+<a href="{% url 'especialidad_create' %}">Nueva</a>
+<table>
+  <tr><th>Nombre</th><th>Acciones</th></tr>
+  {% for e in object_list %}
+  <tr>
+    <td>{{ e.nombre }}</td>
+    <td>
+      <a href="{% url 'especialidad_update' e.pk %}">Editar</a> |
+      <a href="{% url 'especialidad_delete' e.pk %}">Eliminar</a>
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="2">Sin registros</td></tr>{% endfor %}
+</table>
+{% endblock %}
