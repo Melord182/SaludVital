@@ -1,0 +1,29 @@
+{% extends "salud/base.html" %}
+{% block content %}
+<h2>Medicamentos</h2>
+<a class="btn" href="{% url 'salud:medicamento_create' %}">➕ Nuevo Medicamento</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for med in object_list %}
+    <tr>
+      <td>{{ med.nombre }}</td>
+      <td>{{ med.descripcion }}</td>
+      <td>
+        <a class="edit" href="{% url 'salud:medicamento_update' med.pk %}">Editar</a> |
+        <a class="delete" href="{% url 'salud:medicamento_delete' med.pk %}">Eliminar</a>
+      </td>
+    </tr>
+    {% empty %}
+      <tr><td colspan="3">No hay medicamentos registrados.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
