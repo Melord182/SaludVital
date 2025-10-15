@@ -1,8 +1,69 @@
 """
-Script para cargar datos iniciales realistas en la base de datos.
-Ejecutar con: python manage.py shell < datos_iniciales.py
-"""
+Archivo: datos_iniciales.py
+Ubicación: Raíz del proyecto o dentro de la app (según tu preferencia)
 
+DESCRIPCIÓN GENERAL:
+--------------------
+Este script **puebla la base de datos con datos realistas** para el sistema de gestión de clínica.
+Crea entidades en un orden coherente (Especialidades → Pacientes → Médicos → Medicamentos → Consultas → Tratamientos → Recetas)
+y, antes de eso, **limpia** tablas dependientes para evitar conflictos de integridad referencial.
+
+QUÉ HACE PASO A PASO:
+---------------------
+1) **Limpieza (opcional)**  
+   - Elimina en orden seguro: Recetas → Tratamientos → Consultas → Médicos → Pacientes → Medicamentos → Especialidades.
+   - Útil para rehacer escenarios de prueba desde cero.
+
+2) **Catálogo base**  
+   - Crea 7 **Especialidades** activas.
+
+3) **Personas**  
+   - Inserta 5 **Pacientes** con RUT, contacto, previsión y estado activo.
+   - Inserta 4 **Médicos** asignando especialidad en forma circular (round-robin), con jornada y registro.
+
+4) **Inventario**  
+   - Inserta 5 **Medicamentos** con presentación, concentración, laboratorio, receta requerida y stock.
+
+5) **Actividad clínica**  
+   - Genera 10 **Consultas** con fechas recientes (1 a 60 días atrás), estado aleatorio y textos de motivo/diagnóstico.
+   - Para consultas **REALIZADAS**, crea **Tratamientos** (máx. 5), con fecha de inicio/fin e indicaciones.
+   - Para cada tratamiento, genera de 1 a 3 **Recetas** con dosis, frecuencia, duración y cantidad total.
+
+6) **Resumen**  
+   - Imprime un resumen con totales creados por entidad.
+
+CÓMO EJECUTARLO:
+----------------
+- **Bash / CMD (Windows cmd.exe):**
+    python manage.py shell < datos_iniciales.py
+
+- **PowerShell (evita el error del operador '<')**:
+    Get-Content .\datos_iniciales.py | python manage.py shell
+  (Alternativa: `type .\datos_iniciales.py | python manage.py shell` en cmd.exe)
+
+- **Shell interactivo (opción)**:
+    python manage.py shell
+    >>> exec(open("datos_iniciales.py", encoding="utf-8").read())
+
+NOTAS Y BUENAS PRÁCTICAS:
+-------------------------
+- **Aleatoriedad**: se usa `random` para distribuir fechas/estados/recetas. Si necesitas reproducibilidad exacta,
+  fija una semilla al inicio: `random.seed(42)`.
+- **Zonas horarias**: para proyectos con `USE_TZ=True`, considera usar `timezone.now()` en lugar de `datetime.now()`.
+- **Desempeño**: para cargas masivas, podrías migrar a `bulk_create` por entidad.
+- **Idempotencia**: la limpieza inicial permite ejecutar el script múltiples veces sin duplicar datos.
+- **Seguridad**: ¡Ojo! la limpieza borra datos existentes de esas tablas. Úsalo solo en entornos de desarrollo/prueba.
+
+DEPENDENCIAS:
+-------------
+- Modelos de la app `gestion_clinica`.
+- Módulos estándar: `datetime`, `random`.
+
+RESULTADO ESPERADO:
+-------------------
+Una base de datos de desarrollo **lista para pruebas** de vistas, admin y API, con relaciones consistentes
+y variedad suficiente de estados clínicos para validar filtros, búsquedas y paginación.
+"""
 from gestion_clinica.models import (
     Especialidad, Paciente, Medico, ConsultaMedica,
     Tratamiento, Medicamento, RecetaMedica

@@ -1,7 +1,57 @@
 """
-Modelos de datos para el sistema de gestión de clínica Salud Vital Ltda.
-Define las entidades principales: Especialidad, Paciente, Médico, ConsultaMedica,
-Tratamiento, Medicamento y RecetaMedica.
+Archivo: models.py
+Ubicación: Aplicación 'gestion_clinica'
+
+DESCRIPCIÓN GENERAL:
+--------------------
+Este archivo define los **modelos de datos (ORM)** utilizados en el sistema de gestión clínica **Salud Vital Ltda.**.  
+Cada clase representa una **entidad del dominio médico-administrativo**, que se almacena como una tabla en la base de datos.
+
+Los modelos están diseñados para cubrir todos los aspectos esenciales de una clínica:
+- **Especialidades** médicas disponibles.
+- **Pacientes** registrados con sus datos personales y previsión de salud.
+- **Médicos** asociados a una especialidad.
+- **Consultas médicas** entre pacientes y médicos.
+- **Medicamentos** administrados por la clínica.
+- **Tratamientos** derivados de una consulta.
+- **Recetas médicas** vinculadas a tratamientos y medicamentos.
+
+La estructura sigue las buenas prácticas del ORM de Django:
+- Relaciones **ForeignKey** para conectar entidades relacionadas.
+- Uso de **choices**, **validadores** y **propiedades personalizadas**.
+- Configuración de **Meta** para definir nombres legibles y ordenamientos por defecto.
+
+OBJETIVOS DEL MODELO:
+---------------------
+✔ Modelar de forma coherente y escalable los procesos clínicos.  
+✔ Facilitar consultas complejas mediante relaciones ORM.  
+✔ Integrarse fácilmente con Django Admin y Django REST Framework.  
+✔ Mantener integridad referencial mediante claves foráneas y restricciones.  
+
+RELACIONES ENTRE MODELOS:
+-------------------------
+- **Medico** ➜ pertenece a una **Especialidad**.  
+- **ConsultaMedica** ➜ une un **Paciente** con un **Medico**.  
+- **Tratamiento** ➜ está asociado a una **ConsultaMedica**.  
+- **RecetaMedica** ➜ relaciona un **Tratamiento** con un **Medicamento**.  
+
+FLUJO DE DATOS (EJEMPLO):
+-------------------------
+1️⃣ Un paciente agenda una consulta con un médico.  
+2️⃣ Se genera una instancia de `ConsultaMedica`.  
+3️⃣ El médico prescribe un `Tratamiento`.  
+4️⃣ De ese tratamiento se derivan una o más `RecetaMedica`.  
+5️⃣ Cada receta referencia a un `Medicamento` existente en el stock.
+
+DEPENDENCIAS:
+-------------
+- `django.db.models`: Base de la definición de modelos.  
+- `django.core.validators`: Validadores numéricos y de rango.  
+
+CONCLUSIÓN:
+-----------
+Este módulo constituye el **núcleo del sistema**, proporcionando la base estructural sobre la que se construyen las vistas, 
+serializadores, formularios y API REST del proyecto.
 """
 
 from django.db import models

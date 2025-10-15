@@ -1,8 +1,51 @@
 """
-Filtros personalizados para la API REST del sistema de gestión de clínica.
-Permite filtrar datos por campos específicos de cada modelo.
-"""
+Archivo: filters.py
+Ubicación: Aplicación 'gestion_clinica'
 
+DESCRIPCIÓN GENERAL:
+--------------------
+Este archivo define los **filtros personalizados** que utiliza la API REST del sistema de gestión de clínica
+para permitir a los usuarios realizar búsquedas y filtrados avanzados sobre los datos.
+
+Los filtros están implementados mediante la librería **django-filter**, que se integra directamente con
+Django REST Framework para procesar parámetros enviados en las URLs (por ejemplo: ?nombre=juan&activo=true).
+
+Cada clase de filtro corresponde a un modelo del sistema (Paciente, Médico, Consulta, etc.) y permite
+filtrar registros según campos específicos del modelo o de sus relaciones (por ejemplo: paciente__nombre o medico__especialidad).
+
+OBJETIVO:
+---------
+✔ Mejorar la eficiencia de las consultas en la API.  
+✔ Permitir búsquedas dinámicas sin necesidad de escribir código adicional.  
+✔ Facilitar la integración con interfaces front-end (React, Vue, Angular, etc.).  
+✔ Optimizar el rendimiento al trabajar con grandes volúmenes de datos médicos.
+
+ESTRUCTURA DEL ARCHIVO:
+-----------------------
+- Cada clase hereda de `django_filters.FilterSet`.
+- Dentro de cada clase se definen los filtros específicos por tipo de dato:
+    • `CharFilter` → para texto (con `icontains` para búsquedas insensibles a mayúsculas).  
+    • `BooleanFilter` → para valores booleanos.  
+    • `ChoiceFilter` → para campos con opciones predefinidas.  
+    • `DateFilter` → para filtrar por fechas (por ejemplo: fecha_desde / fecha_hasta).  
+    • `NumberFilter` → para IDs o campos numéricos.  
+
+FLUJO DE FUNCIONAMIENTO:
+------------------------
+1️⃣ El usuario realiza una petición a la API con parámetros en la URL (por ejemplo: `/api/pacientes/?nombre=ana`).  
+2️⃣ Django REST Framework detecta el uso de `django-filter` y aplica los filtros definidos en este archivo.  
+3️⃣ La vista devuelve solo los registros que cumplen las condiciones del filtro.  
+
+DEPENDENCIAS:
+-------------
+- `django_filters`: Librería externa para filtrado de datos en DRF.
+- `.models`: Se importan los modelos que serán filtrados.
+
+CONCLUSIÓN:
+-----------
+Estos filtros hacen que la API sea flexible, eficiente y totalmente configurable, permitiendo búsquedas
+específicas sobre pacientes, médicos, consultas, tratamientos y recetas médicas.
+"""
 import django_filters
 from .models import (
     Especialidad, Paciente, Medico, ConsultaMedica,

@@ -1,6 +1,43 @@
 """
-Configuración del panel de administración de Django para el sistema de gestión de clínica.
-Registra todos los modelos con configuraciones personalizadas.
+Archivo: admin.py
+Ubicación: Aplicación 'gestion_clinica'
+
+DESCRIPCIÓN GENERAL:
+--------------------
+Este archivo configura el **panel de administración de Django (Django Admin)** para el sistema de gestión de clínica.
+El objetivo es registrar todos los modelos de la aplicación y definir cómo se visualizarán y gestionarán sus datos 
+desde la interfaz administrativa.  
+
+Django Admin es una herramienta integrada en el framework que permite a los administradores manejar el contenido 
+del sistema de forma gráfica, sin necesidad de escribir código.
+
+FUNCIONALIDAD PRINCIPAL:
+------------------------
+Cada modelo (como Paciente, Medico, Especialidad, etc.) se registra con una clase personalizada que hereda 
+de `admin.ModelAdmin`. Estas clases permiten controlar:
+
+- **list_display** → Campos visibles en la tabla principal del admin.  
+- **list_filter** → Filtros laterales para facilitar la búsqueda.  
+- **search_fields** → Campos sobre los que se puede buscar mediante texto.  
+- **ordering** → Ordenamiento predeterminado de los registros.  
+- **date_hierarchy** → Barra de navegación por fechas (si aplica).
+
+VENTAJAS DE ESTA CONFIGURACIÓN:
+-------------------------------
+✔ Mejora la legibilidad y accesibilidad de los datos.  
+✔ Permite a los administradores gestionar la información clínica de forma eficiente.  
+✔ Centraliza la administración de pacientes, médicos, tratamientos y recetas.  
+✔ Aprovecha las relaciones entre modelos (como médico-especialidad o paciente-consulta).  
+
+DEPENDENCIAS:
+-------------
+- `django.contrib.admin`: Módulo base para la administración.  
+- `.models`: Importa todos los modelos definidos en la aplicación.  
+
+CONCLUSIÓN:
+-----------
+Este archivo convierte los modelos de la base de datos en entidades administrables dentro del panel de Django,
+proporcionando una interfaz completa para la gestión clínica sin necesidad de desarrollo adicional.
 """
 
 from django.contrib import admin

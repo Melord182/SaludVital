@@ -1,6 +1,52 @@
 """
-Configuración de URLs para la aplicación gestion_clinica.
-Define rutas para templates (CRUD) y endpoints de API REST.
+Archivo: urls.py
+Ubicación: Aplicación 'gestion_clinica'
+
+DESCRIPCIÓN GENERAL:
+--------------------
+Este archivo define las **rutas (URLs)** correspondientes a la aplicación `gestion_clinica`, 
+tanto para la parte **web (templates CRUD)** como para la **API REST**.
+
+Su función es conectar las peticiones del usuario con las vistas adecuadas (funciones o viewsets),
+permitiendo una navegación clara en el sitio y una interacción estructurada con los recursos de la API.
+
+ESTRUCTURA DEL ARCHIVO:
+-----------------------
+1️⃣ **Router de la API REST (Django REST Framework)**  
+   - Usa `DefaultRouter` para registrar los *ViewSets* de cada modelo.
+   - Cada `router.register()` crea automáticamente las rutas estándar REST:
+     - `GET /api/modelo/` → Lista de registros.  
+     - `GET /api/modelo/{id}/` → Detalle de un registro.  
+     - `POST /api/modelo/` → Crear registro.  
+     - `PUT /api/modelo/{id}/` → Actualizar registro.  
+     - `DELETE /api/modelo/{id}/` → Eliminar registro.
+   - Esto permite gestionar fácilmente los datos de forma programática desde el frontend o clientes externos.
+
+2️⃣ **Rutas HTML (Templates CRUD)**  
+   - Se definen con `path()` y apuntan a vistas que renderizan páginas HTML.
+   - Cada entidad (Paciente, Médico, Consulta, etc.) cuenta con sus operaciones CRUD:
+     - `listar`, `crear`, `editar` y `eliminar`.
+   - Estas vistas están pensadas para la administración interna vía interfaz web (no API).
+
+3️⃣ **Página principal (`home`)**  
+   - Actúa como punto de entrada de la aplicación (vista inicial del sistema clínico).
+
+INTEGRACIÓN CON LA API REST:
+----------------------------
+✔ El router DRF se monta en la ruta `/api/`.  
+✔ Todos los endpoints se documentan automáticamente en Swagger (`/api/docs/`).  
+✔ Las rutas CRUD HTML coexisten con los endpoints REST sin interferencias.  
+
+DEPENDENCIAS:
+-------------
+- `django.urls.path` y `include`: para definir y agrupar rutas.
+- `rest_framework.routers.DefaultRouter`: genera automáticamente las rutas REST.
+- `.views`: contiene las vistas funcionales y los viewsets asociados.
+
+CONCLUSIÓN:
+-----------
+Este archivo es el **núcleo de enrutamiento de la aplicación**, unificando tanto la interfaz web (templates)
+como los servicios API, garantizando que cada operación sobre los modelos clínicos esté correctamente expuesta.
 """
 
 from django.urls import path, include

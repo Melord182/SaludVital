@@ -1,7 +1,43 @@
 """
-Vistas para la API REST y vistas basadas en templates del sistema de gestión de clínica.
-Implementa ViewSets para la API y vistas de templates para CRUD.
+Archivo: views.py
+Ubicación: Aplicación 'gestion_clinica'
+
+DESCRIPCIÓN GENERAL:
+--------------------
+Este módulo reúne dos capas de presentación del sistema:
+1) **API REST (ViewSets de DRF)** para consumo programático (frontend SPA, apps móviles, integraciones).
+2) **Vistas basadas en templates (funciones)** para CRUD web tradicional con HTML.
+
+CÓMO ESTÁ ORGANIZADO:
+---------------------
+- Sección "VIEWSETS PARA API REST":
+  • Cada ViewSet hereda de `ModelViewSet` e incluye:
+    - `queryset`: conjunto base de datos.
+    - `serializer_class`: traducción a/desde JSON.
+    - `filterset_class`: filtros declarativos con django-filter.
+    - `search_fields`: búsqueda textual.
+    - `ordering_fields`: campos permitidos para ordenamiento.
+  • DRF generará rutas a través del `DefaultRouter` configurado en `urls.py`.
+
+- Sección "VISTAS BASADAS EN TEMPLATES":
+  • Vistas funcionales para `home` y CRUD de cada entidad.
+  • Usan `render` para devolver HTML y `messages` para feedback al usuario.
+  • `get_object_or_404` garantiza respuestas 404 seguras cuando un recurso no existe.
+  • En acciones POST se redirige (PRG: Post/Redirect/Get) para evitar reenvíos.
+
+BUENAS PRÁCTICAS APLICADAS:
+---------------------------
+- **Seguridad**: uso de `on_delete` apropiado en modelos (p. ej., `PROTECT` en claves clínicas sensibles).
+- **UX**: mensajes de éxito con `django.contrib.messages`.
+- **Mantenibilidad**: filtros centralizados en `filters.py` y serializadores en `serializers.py`.
+
+EXTENSIONES SUGERIDAS (OPCIONAL):
+---------------------------------
+- **Paginación DRF**: configurar `DEFAULT_PAGINATION_CLASS` y `PAGE_SIZE` en settings.
+- **Permisos DRF**: añadir `permission_classes` (p. ej., `IsAuthenticated`) y autenticación.
+- **Formularios Django**: reemplazar acceso directo a `request.POST` por `ModelForm` para validación y limpieza.
 """
+
 
 from rest_framework import viewsets
 from django.shortcuts import render, redirect, get_object_or_404
