@@ -326,7 +326,7 @@ GRANT ALL PRIVILEGES ON DATABASE clinica_salud_vital_db TO clinica_user;
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'clinica_salud_vital_db',
+        'NAME': 'db_salud_vital',
         'USER': 'postgres', 
         'PASSWORD': 'tu_password',
         'HOST': 'localhost',
@@ -337,45 +337,6 @@ DATABASES = {
 
 ---
 
-## 🚀 Despliegue y Producción
-
-### Variables de Entorno (Recomendado)
-
-```python
-# settings.py
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
-}
-```
-
-### Archivo .env (Ejemplo)
-
-```env
-SECRET_KEY=tu-clave-secreta-aqui
-DEBUG=True
-DB_NAME=clinica_salud_vital_db
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_HOST=localhost
-DB_PORT=5432
-```
-
----
 
 ## 📚 Documentación Adicional
 
