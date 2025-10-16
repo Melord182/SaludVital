@@ -1,422 +1,125 @@
 # 🏥 Sistema de Gestión Clínica Salud Vital Ltda.
 
-## Evaluación N°2 - Backend con Django REST Framework
+## Tabla de contenidos
+- [Descripción general](#descripción-general)
+- [Funcionalidades clave](#funcionalidades-clave)
+- [Arquitectura y módulos principales](#arquitectura-y-módulos-principales)
+- [Requisitos y dependencias](#requisitos-y-dependencias)
+- [Guía de instalación y configuración](#guía-de-instalación-y-configuración)
+- [Carga de datos de ejemplo](#carga-de-datos-de-ejemplo)
+- [Uso del sistema](#uso-del-sistema)
+- [Pruebas y calidad](#pruebas-y-calidad)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Resolución de problemas frecuentes](#resolución-de-problemas-frecuentes)
 
----
+## Descripción general
+Sistema integral para administrar la operación diaria de la clínica Salud Vital Ltda. Incluye gestión de pacientes, médicos, consultas, tratamientos, medicamentos y recetas, exponiendo tanto una interfaz web tradicional como una API REST totalmente documentada. La configuración del proyecto habilita Django REST Framework, filtros, paginación y documentación automática con drf-spectacular para ofrecer una experiencia moderna de integración. 【F:clinica_salud_vital/settings.py†L20-L125】【F:clinica_salud_vital/urls.py†L44-L54】
 
-## 📌 Descripción del Proyecto
+## Funcionalidades clave
+- **Modelado clínico completo**: entidades para especialidades, pacientes, médicos, consultas médicas, tratamientos, medicamentos y recetas con relaciones y validaciones pensadas para entornos asistenciales. 【F:gestion_clinica/models.py†L60-L200】
+- **API REST lista para producción**: ViewSets con búsqueda, ordenamiento y filtros personalizados para cada entidad, ideales para integraciones externas o SPA. 【F:gestion_clinica/views.py†L61-L142】【F:gestion_clinica/filters.py†L33-L142】
+- **Interfaz web administrativa**: vistas basadas en templates que cubren operaciones CRUD por entidad y un dashboard con métricas generales. 【F:gestion_clinica/views.py†L148-L200】
+- **Documentación interactiva**: esquema OpenAPI y Swagger UI disponibles en `/api/schema/` y `/api/docs/`. 【F:clinica_salud_vital/urls.py†L51-L54】
+- **Datos demo reproducibles**: script de carga que limpia la base y genera un set coherente de información clínica para pruebas manuales o demostraciones. 【F:datos_iniciales.py†L1-L170】
 
-Sistema integral de gestión para clínicas que permite administrar pacientes, médicos, especialidades, consultas médicas, tratamientos, medicamentos y recetas médicas. Desarrollado con Django REST Framework y PostgreSQL.
+## Arquitectura y módulos principales
+| Módulo | Descripción |
+|--------|-------------|
+| `clinica_salud_vital/settings.py` | Configuración global: apps instaladas, DRF (filtros, paginación, esquema), integración con drf-spectacular y rutas de estáticos. 【F:clinica_salud_vital/settings.py†L20-L125】 |
+| `clinica_salud_vital/urls.py` | Punto de entrada de URLs, expone admin, aplicación principal y documentación de la API. 【F:clinica_salud_vital/urls.py†L44-L54】 |
+| `gestion_clinica/models.py` | Define el dominio clínico completo con relaciones, choices y propiedades auxiliares. 【F:gestion_clinica/models.py†L60-L200】 |
+| `gestion_clinica/views.py` | Contiene los ViewSets DRF y las vistas web (dashboard + CRUD) que reutilizan filtros y serializadores. 【F:gestion_clinica/views.py†L61-L200】 |
+| `gestion_clinica/filters.py` | Filtros avanzados por campo, rango, relaciones y estados para cada entidad. 【F:gestion_clinica/filters.py†L33-L142】 |
+| `datos_iniciales.py` | Script utilitario para limpiar y poblar datos de ejemplo en orden seguro. 【F:datos_iniciales.py†L7-L170】 |
 
----
+## Requisitos y dependencias
+- Python 3.10 o superior (recomendado para Django 5.2).
+- PostgreSQL 12 o superior.
+- Dependencias Python clave:
+  - Django 5.2.7.
+  - Django REST Framework 3.16.1.
+  - django-filter 25.2.
+  - drf-spectacular 0.28.0.
+  - psycopg2-binary 2.9.11 para la conexión con PostgreSQL. 【F:requirements.txt†L3-L11】
 
-## 🎯 Funcionalidades Principales
+## Guía de instalación y configuración
+1. **Clonar el repositorio y crear un entorno virtual**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux / macOS
+   venv\Scripts\activate    # Windows
+   ```
+2. **Instalar dependencias**
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Configurar variables de entorno**
+   - Define `DJANGO_SECRET_KEY`, `DEBUG` y las credenciales de base de datos antes de desplegar.
+   - Actualiza `DATABASES` o usa variables de entorno para apuntar a la instancia deseada (por defecto se usa PostgreSQL local `db_salud_vital`). 【F:clinica_salud_vital/settings.py†L67-L77】
+4. **Aplicar migraciones**
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+5. **Crear un superusuario para el admin**
+   ```bash
+   python manage.py createsuperuser
+   ```
+6. **Levantar el servidor de desarrollo**
+   ```bash
+   python manage.py runserver
+   ```
+7. **Accesos principales**
+   - Home / dashboard: `http://localhost:8000/`
+   - Admin de Django: `http://localhost:8000/admin/`
+   - Documentación Swagger UI: `http://localhost:8000/api/docs/`
 
-### Gestión de Entidades
-- ✅ **Especialidades Médicas:** CRUD completo con estado activo/inactivo
-- ✅ **Pacientes:** Gestión con previsión de salud (FONASA, ISAPRE, PARTICULAR)
-- ✅ **Médicos:** Asignación de especialidades y jornadas laborales
-- ✅ **Consultas Médicas:** Registro de atenciones con diagnósticos
-- ✅ **Tratamientos:** Asociados a consultas realizadas
-- ✅ **Medicamentos:** Catálogo con control de stock
-- ✅ **Recetas Médicas:** Prescripciones asociadas a tratamientos
+## Carga de datos de ejemplo
+1. Verifica que la base esté vacía o que se trate de un entorno de desarrollo (el script elimina registros existentes en las tablas clínicas).
+2. Ejecuta el script de datos iniciales:
+   ```bash
+   python manage.py shell < datos_iniciales.py
+   ```
+   - En PowerShell usa `Get-Content .\datos_iniciales.py | python manage.py shell`.
+3. El script creará especialidades, pacientes, médicos, medicamentos, consultas, tratamientos y recetas en orden seguro e imprimirá un resumen final. 【F:datos_iniciales.py†L11-L170】
+
+## Uso del sistema
+### Interfaz web
+- Navega por los menús `especialidades`, `pacientes`, `médicos`, `consultas`, `tratamientos`, `medicamentos` y `recetas` para gestionar registros mediante formularios HTML.
+- El home muestra totales de pacientes, médicos, especialidades activas y consultas registradas. 【F:gestion_clinica/views.py†L148-L170】
 
 ### API REST
-- ✅ Endpoints para todas las entidades
-- ✅ Filtros personalizados por campos clave
-- ✅ Búsqueda y ordenamiento
-- ✅ Paginación implementada
-- ✅ Documentación interactiva con Swagger
+- Endpoints base disponibles en `/api/<recurso>/` gracias al router de Django REST Framework. 【F:gestion_clinica/urls.py†L56-L114】
+- Filtros y parámetros comunes:
+  - Búsqueda por nombre, apellidos o RUT en pacientes y médicos (`search` + filtros personalizados). 【F:gestion_clinica/views.py†L76-L107】【F:gestion_clinica/filters.py†L49-L85】
+  - Filtrado por especialidad, estado de consulta, fecha desde/hasta y más. 【F:gestion_clinica/views.py†L87-L142】【F:gestion_clinica/filters.py†L87-L142】
+  - Paginación estándar con tamaño de página 10 configurable. 【F:clinica_salud_vital/settings.py†L107-L117】
+- Documentación interactiva en `/api/docs/` y esquema en `/api/schema/` para explorar y probar cada endpoint. 【F:clinica_salud_vital/urls.py†L51-L54】
 
-### Interfaz Web
-- ✅ Dashboard con estadísticas
-- ✅ CRUD completo mediante templates HTML
-- ✅ Diseño responsive con Bootstrap 5
-- ✅ Mensajes de confirmación
+## Pruebas y calidad
+- Ejecuta los tests definidos en la aplicación con:
+  ```bash
+  python manage.py test
+  ```
+  (Se proporciona una plantilla inicial en `gestion_clinica/tests.py` para extender las pruebas unitarias y de integración). 【F:gestion_clinica/tests.py†L1-L3】
+
+## Estructura del proyecto
+```
+SaludVital/
+├── clinica_salud_vital/      # Configuración del proyecto y URLs raíz
+├── gestion_clinica/          # Aplicación principal (modelos, vistas, filtros, serializers)
+├── templates/                # Plantillas HTML para la interfaz web
+├── static/                   # Archivos estáticos gestionados por Django
+├── datos_iniciales.py        # Script de carga de datos demo
+├── manage.py                 # Punto de entrada de comandos Django
+└── requirements.txt          # Dependencias del entorno
+```
+Los directorios `templates` y `static` están registrados en la configuración para su uso en producción/desarrollo. 【F:clinica_salud_vital/settings.py†L49-L103】
+
+## Resolución de problemas frecuentes
+- **Error de conexión a PostgreSQL**: confirma credenciales, puerto y disponibilidad del servicio; ajusta `DATABASES` en `settings.py` o variables de entorno. 【F:clinica_salud_vital/settings.py†L67-L77】
+- **Falta de datos para pruebas**: vuelve a ejecutar `datos_iniciales.py` en un entorno de desarrollo limpio. 【F:datos_iniciales.py†L11-L170】
+- **Resultados vacíos en la API**: revisa los parámetros de filtro (`?nombre=`, `?especialidad=`, `?fecha_desde=`) y la paginación (`?page=`). 【F:gestion_clinica/filters.py†L49-L142】【F:clinica_salud_vital/settings.py†L107-L117】
 
 ---
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Backend:** Django 4.2+
-- **API:** Django REST Framework 3.14+
-- **Base de Datos:** PostgreSQL 12+
-- **Documentación:** drf-spectacular (Swagger/OpenAPI)
-- **Filtros:** django-filter
-- **Frontend:** Bootstrap 5, Bootstrap Icons
-- **Python:** 3.8+
-
----
-
-## 📦 Instalación Rápida
-
-```bash
-# 1. Crear entorno virtual
-python -m venv eva2
-source eva2/bin/activate  # Linux/Mac
-eva2\Scripts\activate     # Windows
-
-# 2. Instalar dependencias
-pip install django djangorestframework psycopg2-binary django-filter drf-spectacular
-
-# 3. Crear proyecto
-django-admin startproject clinica_salud_vital .
-python manage.py startapp gestion_clinica
-
-# 4. Configurar base de datos PostgreSQL
-# Editar settings.py con credenciales
-
-# 5. Migrar base de datos
-python manage.py makemigrations
-python manage.py migrate
-
-# 6. Crear superusuario
-python manage.py createsuperuser
-
-# 7. Cargar datos de prueba
-python manage.py shell < datos_iniciales.py
-
-# 8. Ejecutar servidor
-python manage.py runserver
-```
-
----
-
-## 🌐 URLs del Sistema
-
-| Servicio | URL | Descripción |
-|----------|-----|-------------|
-| **Home** | http://localhost:8000/ | Página principal |
-| **Admin** | http://localhost:8000/admin/ | Panel administrativo |
-| **API Docs** | http://localhost:8000/api/docs/ | Documentación Swagger |
-| **API Root** | http://localhost:8000/api/ | Endpoints de la API |
-
-### Endpoints API REST
-
-- `GET/POST /api/especialidades/` - Gestión de especialidades
-- `GET/POST /api/pacientes/` - Gestión de pacientes
-- `GET/POST /api/medicos/` - Gestión de médicos
-- `GET/POST /api/consultas/` - Gestión de consultas
-- `GET/POST /api/tratamientos/` - Gestión de tratamientos
-- `GET/POST /api/medicamentos/` - Gestión de medicamentos
-- `GET/POST /api/recetas/` - Gestión de recetas
-
----
-
-## 🔍 Ejemplos de Uso de la API
-
-### Listar todos los médicos
-```bash
-GET http://localhost:8000/api/medicos/
-```
-
-### Filtrar médicos por especialidad
-```bash
-GET http://localhost:8000/api/medicos/?especialidad=1
-GET http://localhost:8000/api/medicos/?especialidad_nombre=Cardiología
-```
-
-### Filtrar consultas por estado
-```bash
-GET http://localhost:8000/api/consultas/?estado=REALIZADA
-```
-
-### Buscar pacientes por nombre
-```bash
-GET http://localhost:8000/api/pacientes/?nombre=María
-```
-
-### Filtrar medicamentos que requieren receta
-```bash
-GET http://localhost:8000/api/medicamentos/?requiere_receta=true
-```
-
-### Crear una nueva especialidad (POST)
-```json
-{
-  "nombre": "Neurología",
-  "descripcion": "Especialidad del sistema nervioso",
-  "activa": true
-}
-```
-
----
-
-## 📊 Modelo de Datos
-
-### Diagrama de Relaciones
-
-```
-Especialidad
-    ↓ (1:N)
-Medico ←──────┐
-    ↓         │
-ConsultaMedica│
-    ↑         │
-Paciente ─────┘
-    ↓
-Tratamiento
-    ↓
-RecetaMedica
-    ↓
-Medicamento
-```
-
-### Entidades Principales
-
-**Especialidad**
-- nombre, descripcion, activa, fecha_creacion
-
-**Paciente**
-- rut, nombre, apellidos, fecha_nacimiento, teléfono, email
-- dirección, previsión (CHOICE), activo
-
-**Medico**
-- rut, nombre, apellidos, especialidad (FK)
-- teléfono, email, numero_registro
-- jornada (CHOICE), activo, fecha_ingreso
-
-**ConsultaMedica**
-- paciente (FK), medico (FK), fecha_hora
-- motivo_consulta, diagnóstico, observaciones
-- estado (CHOICE)
-
-**Tratamiento**
-- consulta (FK), descripción, fecha_inicio/fin
-- indicaciones, activo
-
-**Medicamento**
-- nombre, principio_activo, presentación, concentración
-- laboratorio, requiere_receta, stock_disponible
-
-**RecetaMedica**
-- tratamiento (FK), medicamento (FK)
-- dosis, frecuencia, duración, cantidad_total
-- instrucciones_especiales
-
----
-
-## ✨ Características Destacadas
-
-### 1. CHOICES Implementados (Mejoras del Modelo)
-
-```python
-# Paciente - Tipo de Previsión
-PREVISION_CHOICES = [
-    ('FONASA', 'FONASA'),
-    ('ISAPRE', 'ISAPRE'),
-    ('PARTICULAR', 'Particular'),
-    ('OTRO', 'Otro'),
-]
-
-# Medico - Tipo de Jornada
-JORNADA_CHOICES = [
-    ('COMPLETA', 'Jornada Completa'),
-    ('PARCIAL', 'Jornada Parcial'),
-    ('TURNO', 'Por Turno'),
-]
-
-# ConsultaMedica - Estado
-ESTADO_CHOICES = [
-    ('AGENDADA', 'Agendada'),
-    ('REALIZADA', 'Realizada'),
-    ('CANCELADA', 'Cancelada'),
-    ('NO_ASISTIO', 'No Asistió'),
-]
-```
-
-### 2. Filtros Avanzados
-
-- **Por Especialidad:** Filtrar médicos y consultas
-- **Por Paciente:** Ver historial de consultas
-- **Por Médico:** Ver atenciones realizadas
-- **Por Fechas:** Consultas en rangos de tiempo
-- **Por Estado:** Consultas agendadas, realizadas, etc.
-
-### 3. Documentación Interactiva
-
-- **Swagger UI:** Prueba de endpoints en vivo
-- **Schema OpenAPI:** Estándar de documentación
-- **Ejemplos de Request/Response:** Para cada endpoint
-
-### 4. Panel de Administración Personalizado
-
-- Filtros por campos relevantes
-- Búsqueda avanzada
-- Visualización optimizada
-- Acciones masivas
-
----
-
-## 📝 Datos de Prueba
-
-El sistema viene con datos de prueba realistas:
-
-- ✅ 7 Especialidades médicas
-- ✅ 5 Pacientes con información completa
-- ✅ 4 Médicos asignados a especialidades
-- ✅ 5 Medicamentos con stock
-- ✅ 10 Consultas médicas en diferentes estados
-- ✅ 5 Tratamientos activos
-- ✅ Múltiples recetas médicas
-
----
-
-## 🎨 Interfaz de Usuario
-
-### Características del Frontend
-
-- **Responsive Design:** Compatible con móviles y tablets
-- **Bootstrap 5:** Framework CSS moderno
-- **Bootstrap Icons:** Iconografía consistente
-- **Mensajes Flash:** Feedback inmediato de acciones
-- **Navegación Intuitiva:** Menú dropdown organizado
-- **Tarjetas Interactivas:** Hover effects y animaciones
-- **Tablas Responsivas:** Scroll horizontal en móviles
-
-### Paleta de Colores
-
-- **Primario:** Azul corporativo (#2c5f7c)
-- **Secundario:** Cyan médico (#4a90a4)
-- **Éxito:** Verde (#198754)
-- **Advertencia:** Amarillo (#ffc107)
-- **Peligro:** Rojo (#dc3545)
-
----
-
-## 📋 Cumplimiento de Criterios de Evaluación
-
-| Criterio | Puntaje | Estado |
-|----------|---------|--------|
-| 1. Entorno virtual "eva2" | 2 | ✅ |
-| 2. Comentarios en bloque | 5 | ✅ |
-| 3. Estructura del proyecto | 5 | ✅ |
-| 4. Modelo de datos (PostgreSQL) | 10 | ✅ |
-| 5. CRUD completo por entidad | 10 | ✅ |
-| 6. Carga BD con datos realistas | 5 | ✅ |
-| 7. Mejoras en el modelo (CHOICES) | 6 | ✅ |
-| 8. Templates (vistas HTML) | 10 | ✅ |
-| 9. Sistema de documentación | 5 | ✅ |
-| 10. Filtros y búsquedas | 5 | ✅ |
-| 11. Uso de PostgreSQL | 5 | ✅ |
-| 12. Rutas y endpoints de la API | 5 | ✅ |
-| 13. Footer en templates | 2 | ✅ |
-| 14. Nombrado del proyecto y app | 2 | ✅ |
-| **TOTAL** | **77** | **✅ 100%** |
-
----
-
-## 🔧 Configuración de PostgreSQL
-
-### Crear Base de Datos
-
-```sql
--- En psql o pgAdmin
-CREATE DATABASE clinica_salud_vital_db;
-CREATE USER clinica_user WITH PASSWORD 'tu_password';
-ALTER ROLE clinica_user SET client_encoding TO 'utf8';
-ALTER ROLE clinica_user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE clinica_user SET timezone TO 'America/Santiago';
-GRANT ALL PRIVILEGES ON DATABASE clinica_salud_vital_db TO clinica_user;
-```
-
-### Configuración en settings.py
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_salud_vital',
-        'USER': 'postgres', 
-        'PASSWORD': 'tu_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-```
-
----
-
-
-## 📚 Documentación Adicional
-
-### Comandos Útiles
-
-```bash
-# Ver todas las URLs disponibles
-python manage.py show_urls
-
-# Crear fixture de datos actuales
-python manage.py dumpdata > datos_backup.json
-
-# Cargar fixture
-python manage.py loaddata datos_backup.json
-
-# Shell interactivo con Django
-python manage.py shell
-
-# Crear migraciones para cambios
-python manage.py makemigrations
-
-# Ver SQL de las migraciones
-python manage.py sqlmigrate gestion_clinica 0001
-
-# Verificar problemas
-python manage.py check
-
-# Recolectar archivos estáticos
-python manage.py collectstatic
-```
-
-### Testing
-
-```bash
-# Ejecutar tests
-python manage.py test
-
-# Ejecutar tests con cobertura
-coverage run --source='.' manage.py test
-coverage report
-```
-
----
-
-## 🐛 Solución de Problemas Comunes
-
-### Error: No module named 'psycopg2'
-```bash
-pip install psycopg2-binary
-```
-
-### Error: relation does not exist
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Error: Port already in use
-```bash
-# Usar otro puerto
-python manage.py runserver 8080
-```
-
-### Error: Could not connect to PostgreSQL
-- Verificar que PostgreSQL esté corriendo
-- Verificar credenciales en settings.py
-- Verificar que la base de datos exista
-
----
-
-## 👥 Autor
-
-**Jaime López Salazar**
-- Sección: AP-172-N4
-- Asignatura: Backend
-- Año: 2025
-
----
-
-## 📄 Licencia
-
-Este proyecto fue desarrollado con fines educativos para la Evaluación N°2 de Backend.
-
+**Autor original:** Jaime López Salazar — Proyecto académico para la asignatura de Backend.
