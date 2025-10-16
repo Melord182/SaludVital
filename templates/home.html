@@ -34,15 +34,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-body text-center">
-                <i class="bi bi-heart-pulse fs-1"></i>
-                <h3 class="card-title mt-2">{{ total_especialidades }}</h3>
-                <p class="card-text">Especialidades</p>
-            </div>
-        </div>
-    </div>
+    
     <div class="col-md-3">
         <div class="card text-white bg-warning mb-3">
             <div class="card-body text-center">
@@ -69,7 +61,8 @@
             </div>
         </div>
     </div>
-    
+
+
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body">
@@ -109,7 +102,16 @@
             </div>
         </div>
     </div>
-    
+    <div class="col-md-4 mb-3">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-flask text-primary"></i> Laboratorios</h5>
+            <p class="card-text">Administra el catálogo de laboratorios farmacéuticos.</p>
+            <a href="{% url 'laboratorio_lista' %}" class="btn btn-primary btn-sm">Ver Laboratorios</a>
+        </div>
+    </div>
+</div>
+
     <div class="col-md-4 mb-3">
         <div class="card">
             <div class="card-body">
@@ -140,14 +142,5 @@
         </div>
     </div>
     
-    <div class="col-md-4 mb-3">
-        <div class="card border-dark">
-            <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-gear text-dark"></i> Administración</h5>
-                <p class="card-text">Accede al panel de administración de Django.</p>
-                <a href="/admin/" target="_blank" class="btn btn-outline-dark btn-sm">Panel Admin</a>
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}

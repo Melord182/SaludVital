@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Laboratorios - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-flask"></i> Laboratorios</h2>
+    <a href="{% url 'laboratorio_crear' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nuevo Laboratorio
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <form method="get" class="row g-2 mb-3">
+  {{ filter.form.as_p }}
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+    <a href="{% url 'laboratorio_lista' %}" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+  </div>
+</form>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>País</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for laboratorio in laboratorios %}
+                    <tr>
+                        <td>{{ laboratorio.id }}</td>
+                        <td><strong>{{ laboratorio.nombre }}</strong></td>
+                        <td>{{ laboratorio.pais }}</td>
+                        <td>{{ laboratorio.telefono|default:"—" }}</td>
+                        <td>{{ laboratorio.email|default:"—" }}</td>
+                        <td>
+                            {% if laboratorio.activo %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'laboratorio_editar' laboratorio.pk %}" 
+                               class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'laboratorio_eliminar' laboratorio.pk %}" 
+                               class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No hay laboratorios registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

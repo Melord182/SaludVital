@@ -47,7 +47,7 @@ entregue datos coherentes, validados y fácilmente interpretables por cualquier 
 from rest_framework import serializers
 from .models import (
     Especialidad, Paciente, Medico, ConsultaMedica,
-    Tratamiento, Medicamento, RecetaMedica
+    Tratamiento, Medicamento, RecetaMedica, Laboratorio
 )
 
 
@@ -63,7 +63,18 @@ class EspecialidadSerializer(serializers.ModelSerializer):
     
     def get_cantidad_medicos(self, obj):
         return obj.medicos.filter(activo=True).count()
-
+class LaboratorioSerializer(serializers.ModelSerializer):
+    """
+    Serializador para el modelo Laboratorio.
+    """
+    cantidad_medicamentos = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Laboratorio
+        fields = '__all__'
+    
+    def get_cantidad_medicamentos(self, obj):
+        return obj.medicamentos.filter(activo=True).count()
 
 class PacienteSerializer(serializers.ModelSerializer):
     """

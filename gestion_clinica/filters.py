@@ -49,7 +49,7 @@ específicas sobre pacientes, médicos, consultas, tratamientos y recetas médic
 import django_filters
 from .models import (
     Especialidad, Paciente, Medico, ConsultaMedica,
-    Tratamiento, Medicamento, RecetaMedica
+    Tratamiento, Medicamento, RecetaMedica, Laboratorio
 )
 
 
@@ -63,7 +63,27 @@ class EspecialidadFilter(django_filters.FilterSet):
     class Meta:
         model = Especialidad
         fields = ['nombre', 'activa']
+# filters.py
+class LaboratorioFilter(django_filters.FilterSet):
+    pais = django_filters.ChoiceFilter(choices=[], label='País')
+    activo = django_filters.ChoiceFilter(choices=[('', 'Todos'), ('true','Sí'), ('false','No')], method='filter_activo')
 
+    class Meta:
+        model = Laboratorio
+        fields = ['pais', 'activo']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # construir choices dinámicamente desde la BD (orden alfabético)
+        paises = (self.queryset.values_list('pais', flat=True)
+                               .distinct()
+                               .order_by('pais'))
+        self.filters['pais'].extra['choices'] = [('', 'Todos')] + [(p, p) for p in paises]
+
+    def filter_activo(self, queryset, name, value):
+        if value == 'true':  return queryset.filter(activo=True)
+        if value == 'false': return queryset.filter(activo=False)
+        return queryset
 
 class PacienteFilter(django_filters.FilterSet):
     """
@@ -112,20 +132,18 @@ class ConsultaMedicaFilter(django_filters.FilterSet):
         fields = ['medico', 'paciente', 'especialidad', 'estado', 'fecha_desde', 'fecha_hasta']
 
 
+
 class MedicamentoFilter(django_filters.FilterSet):
-    """
-    Filtro para búsqueda de medicamentos.
-    """
     nombre = django_filters.CharFilter(lookup_expr='icontains')
     principio_activo = django_filters.CharFilter(lookup_expr='icontains')
-    laboratorio = django_filters.CharFilter(lookup_expr='icontains')
+    laboratorio = django_filters.NumberFilter(field_name='laboratorio__id')  # por id
+    laboratorio_nombre = django_filters.CharFilter(field_name='laboratorio__nombre', lookup_expr='icontains')
     requiere_receta = django_filters.BooleanFilter()
     activo = django_filters.BooleanFilter()
-    
+
     class Meta:
         model = Medicamento
-        fields = ['nombre', 'principio_activo', 'laboratorio', 'requiere_receta', 'activo']
-
+        fields = ['nombre', 'principio_activo', 'laboratorio', 'laboratorio_nombre', 'requiere_receta', 'activo']
 
 class TratamientoFilter(django_filters.FilterSet):
     """

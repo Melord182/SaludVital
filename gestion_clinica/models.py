@@ -189,7 +189,7 @@ class Medicamento(models.Model):
     principio_activo = models.CharField(max_length=200)
     presentacion = models.CharField(max_length=100)
     concentracion = models.CharField(max_length=50)
-    laboratorio = models.CharField(max_length=100)
+    laboratorio = models.ForeignKey('Laboratorio', on_delete=models.PROTECT, related_name='medicamentos')
     requiere_receta = models.BooleanField(default=True)
     stock_disponible = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     activo = models.BooleanField(default=True)
@@ -245,3 +245,23 @@ class RecetaMedica(models.Model):
     
     def __str__(self):
         return f"Receta {self.id} - {self.medicamento.nombre}"
+
+class Laboratorio(models.Model):
+    """
+    Modelo para representar los laboratorios farmacéuticos.
+    """
+    nombre = models.CharField(max_length=200, unique=True)
+    pais = models.CharField(max_length=100)
+    direccion = models.CharField(max_length=200, blank=True)
+    telefono = models.CharField(max_length=15, blank=True)
+    email = models.EmailField(blank=True)
+    activo = models.BooleanField(default=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Laboratorio'
+        verbose_name_plural = 'Laboratorios'
+        ordering = ['nombre']
+    
+    def __str__(self):
+        return self.nombre

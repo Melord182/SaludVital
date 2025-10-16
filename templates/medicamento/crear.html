@@ -9,59 +9,19 @@
         <h4 class="mb-0"><i class="bi bi-capsule"></i> Nuevo Medicamento</h4>
       </div>
       <div class="card-body">
-        <form method="post" novalidate>
+        <form method="post" action="">
           {% csrf_token %}
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Nombre *</label>
-              <input type="text" name="nombre" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Principio Activo *</label>
-              <input type="text" name="principio_activo" class="form-control" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Presentación *</label>
-              <input type="text" name="presentacion" class="form-control" placeholder="Ej: Comprimidos 20 unid." required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Concentración *</label>
-              <input type="text" name="concentracion" class="form-control" placeholder="Ej: 500 mg" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Laboratorio *</label>
-              <input type="text" name="laboratorio" class="form-control" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Stock Disponible *</label>
-              <input type="number" name="stock_disponible" class="form-control" min="0" step="1" value="0" required>
-            </div>
-            <div class="col-md-4 mb-3 d-flex align-items-center gap-2">
-              <input type="checkbox" name="requiere_receta" id="requiere_receta" class="form-check-input" checked>
-              <label for="requiere_receta" class="form-check-label">Requiere receta</label>
-            </div>
-            <div class="col-md-4 mb-3 d-flex align-items-center gap-2">
-              <input type="checkbox" name="activo" id="activo" class="form-check-input" checked>
-              <label for="activo" class="form-check-label">Activo</label>
-            </div>
-          </div>
-
+          {{ form.as_p }}
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary">
+            <a href="{% url 'consulta_lista' %}" class="btn btn-secondary">
               <i class="bi bi-x-circle"></i> Cancelar
             </a>
             <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save"></i> Guardar
+              <i class="bi bi-save"></i> Guardar Consulta
             </button>
           </div>
         </form>
+
       </div>
     </div>
   </div>

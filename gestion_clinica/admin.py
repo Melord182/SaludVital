@@ -43,7 +43,7 @@ proporcionando una interfaz completa para la gestión clínica sin necesidad de 
 from django.contrib import admin
 from .models import (
     Especialidad, Paciente, Medico, ConsultaMedica,
-    Tratamiento, Medicamento, RecetaMedica
+    Tratamiento, Medicamento, RecetaMedica, Laboratorio
 )
 
 
@@ -55,6 +55,16 @@ class EspecialidadAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'activa', 'fecha_creacion']
     list_filter = ['activa']
     search_fields = ['nombre', 'descripcion']
+    ordering = ['nombre']
+
+@admin.register(Laboratorio)
+class LaboratorioAdmin(admin.ModelAdmin):
+    """
+    Configuración del admin para Laboratorio.
+    """
+    list_display = ['nombre', 'pais', 'telefono', 'email']
+    list_filter = ['pais']
+    search_fields = ['nombre', 'pais']
     ordering = ['nombre']
 
 
@@ -78,6 +88,7 @@ class MedicoAdmin(admin.ModelAdmin):
     list_filter = ['especialidad', 'jornada', 'activo']
     search_fields = ['rut', 'nombre', 'apellido_paterno', 'apellido_materno', 'numero_registro']
     ordering = ['apellido_paterno', 'apellido_materno', 'nombre']
+
 
 
 @admin.register(ConsultaMedica)

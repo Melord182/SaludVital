@@ -62,7 +62,7 @@ router.register(r'consultas', views.ConsultaMedicaViewSet, basename='consulta-ap
 router.register(r'tratamientos', views.TratamientoViewSet, basename='tratamiento-api')
 router.register(r'medicamentos', views.MedicamentoViewSet, basename='medicamento-api')
 router.register(r'recetas', views.RecetaMedicaViewSet, basename='receta-api')
-
+router.register(r'laboratorios', views.LaboratorioViewSet, basename='laboratorio-api')
 urlpatterns = [
     # Página de inicio
     path('', views.home, name='home'),
@@ -82,6 +82,13 @@ urlpatterns = [
     path('pacientes/<int:pk>/editar/', views.paciente_editar, name='paciente_editar'),
     path('pacientes/<int:pk>/eliminar/', views.paciente_eliminar, name='paciente_eliminar'),
     
+    # URLs para CRUD de Laboratorio
+      path('laboratorios/', views.laboratorio_lista, name='laboratorio_lista'),
+      path('laboratorios/crear/', views.laboratorio_crear, name='laboratorio_crear'),
+      path('laboratorios/<int:pk>/editar/', views.laboratorio_editar, name='laboratorio_editar'),
+      path('laboratorios/<int:pk>/eliminar/', views.laboratorio_eliminar, name='laboratorio_eliminar'),
+   
+
     # URLs para CRUD de Médico
     path('medicos/', views.medico_lista, name='medico_lista'),
     path('medicos/crear/', views.medico_crear, name='medico_crear'),
