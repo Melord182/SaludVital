@@ -13,17 +13,11 @@
           {% csrf_token %}
 
           <div class="mb-3">
-            <label class="form-label">Consulta *</label>
-            <select name="consulta" class="form-select" required>
-              <option value="">Seleccione...</option>
-              {% for c in consultas %}
-                <option value="{{ c.id }}">
-                  Consulta #{{ c.id }} · {{ c.paciente.nombre_completo }} con {{ c.medico.nombre_completo }} · {{ c.fecha_hora|date:"d/m/Y H:i" }}
-                </option>
-              {% endfor %}
-            </select>
-            <div class="form-text">Solo se listan consultas con estado REALIZADA.</div>
-          </div>
+    <label for="{{ form.consulta.id_for_label }}" class="form-label">Consulta *</label>
+    {{ form.consulta }}
+    {{ form.consulta.errors }}
+  </div>
+
 
           <div class="row">
             <div class="col-md-6 mb-3">

@@ -92,6 +92,7 @@ class LaboratorioViewSet(viewsets.ModelViewSet):
     context_object_name = 'laboratorios'
     search_fields = ['nombre', 'pais']
     ordering_fields = ['nombre', 'pais']
+
 class PacienteViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar pacientes vía API.
@@ -188,12 +189,12 @@ def home(request):
 # =============================================
 
 def especialidad_lista(request):
-    """
-    Lista todas las especialidades.
-    """
-    especialidades = Especialidad.objects.all()
-    return render(request, 'especialidad/lista.html', {'especialidades': especialidades})
-
+    qs = Especialidad.objects.all()
+    filtro = EspecialidadFilter(request.GET, queryset=Especialidad.objects.all())
+    return render(request, 'especialidad/lista.html', {
+        'filter': filtro,
+        'especialidades': filtro.qs,
+    })
 
 def especialidad_crear(request):
     if request.method == 'POST':
@@ -245,13 +246,12 @@ def especialidad_eliminar(request, pk):
 # =============================================
 
 def paciente_lista(request):
-    """
-    Lista todos los pacientes.
-    """
-    pacientes = Paciente.objects.all()
-    return render(request, 'paciente/lista.html', {'pacientes': pacientes})
-
-
+    qs = Paciente.objects.all()
+    filtro = PacienteFilter(request.GET, queryset=Paciente.objects.all())
+    return render(request, 'paciente/lista.html', {
+        'filter': filtro,
+        'pacientes': filtro.qs,
+    })
 def paciente_crear(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)

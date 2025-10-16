@@ -99,7 +99,7 @@ class TratamientoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Por tu lógica actual, solo consultas REALIZADAS para crear/editar tratamientos
-        self.fields['consulta'].queryset = ConsultaMedica.objects.all()
+        self.fields['consulta'].queryset = ConsultaMedica.objects.filter(estado='REALIZADA', paciente__activo=True)
 
     def clean(self):
         cleaned = super().clean()

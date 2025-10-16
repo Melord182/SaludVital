@@ -57,13 +57,30 @@ class EspecialidadFilter(django_filters.FilterSet):
     """
     Filtro para búsqueda de especialidades.
     """
-    nombre = django_filters.CharFilter(lookup_expr='icontains')
+    nombre = django_filters.ChoiceFilter(choices=[], label='Nombre')
     activa = django_filters.BooleanFilter()
     
     class Meta:
         model = Especialidad
         fields = ['nombre', 'activa']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        nombres = (self.queryset.values_list('nombre', flat=True)
+                                .distinct()
+                                .order_by('nombre'))
+        self.filters['nombre'].extra['choices'] = [('', 'Todos')] + [(n, n) for n in nombres]
+    def filter_activo(self, queryset, name, value):
+        if value == 'true':  return queryset.filter(activo=True)
+        if value == 'false': return queryset.filter(activo=False)
+        return queryset
+
+
+        # opcional: clases Bootstrap
+        self.filters['nombre'].field.widget.attrs.setdefault('class', 'form-control')
+        self.filters['activa'].field.widget.attrs.setdefault('class', 'form-check-input')
 # filters.py
+
 class LaboratorioFilter(django_filters.FilterSet):
     pais = django_filters.ChoiceFilter(choices=[], label='País')
     activo = django_filters.ChoiceFilter(choices=[('', 'Todos'), ('true','Sí'), ('false','No')], method='filter_activo')
@@ -89,16 +106,39 @@ class PacienteFilter(django_filters.FilterSet):
     """
     Filtro para búsqueda de pacientes.
     """
-    nombre = django_filters.CharFilter(lookup_expr='icontains')
-    apellido = django_filters.CharFilter(field_name='apellido_paterno', lookup_expr='icontains')
-    rut = django_filters.CharFilter(lookup_expr='icontains')
-    prevision = django_filters.ChoiceFilter(choices=Paciente.PREVISION_CHOICES)
-    activo = django_filters.BooleanFilter()
+    nombre = django_filters.ChoiceFilter(choices=[], label='nombre')
+    apellido = django_filters.ChoiceFilter(choices=[], label='apellido')
+    rut = django_filters.ChoiceFilter(choices=[], label='rut')
     
     class Meta:
         model = Paciente
         fields = ['nombre', 'apellido', 'rut', 'prevision', 'activo']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # opcional: clases Bootstrap
+        nombre = (self.queryset.values_list('nombre', flat=True)
+                                 .distinct()
+                                 .order_by('nombre'))
+        apellido = (self.queryset.values_list('apellido_paterno', flat=True)
+                                   .distinct()
+                                   .order_by('apellido_paterno'))
+        rut = (self.queryset.values_list('rut', flat=True)
+                             .distinct()
+                             .order_by('rut'))
+        prevision = (self.queryset.values_list('prevision', flat=True)
+                                   .distinct()
+                                    .order_by('prevision'))
+        self.filters['nombre'].extra['choices'] = [('', 'Todos')] + [(n, n) for n in nombre]
+        self.filters['apellido'].extra['choices'] = [('', 'Todos')] + [(a, a) for a in apellido]
+        self.filters['rut'].extra['choices'] = [('', 'Todos')] + [(r, r) for r in rut]
+        self.filters['prevision'].extra['choices'] = [('', 'Todas')] + list(Paciente.PREVISION_CHOICES)
+        
+
+    def filter_activo(self, queryset, name, value):
+        if value == 'true':  return queryset.filter(activo=True)
+        if value == 'false': return queryset.filter(activo=False)
+        return queryset
 
 class MedicoFilter(django_filters.FilterSet):
     """
