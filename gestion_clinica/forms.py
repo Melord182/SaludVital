@@ -44,19 +44,15 @@ class PacienteForm(forms.ModelForm):
 class MedicoForm(forms.ModelForm):
     class Meta:
         model = Medico
-        fields = [
-            'rut', 'nombre', 'apellido_paterno', 'apellido_materno',
-            'especialidad', 'telefono', 'email', 'numero_registro',
-            'jornada', 'fecha_ingreso', 'activo'
-        ]
-        widgets = {
-            'fecha_ingreso': forms.DateInput(attrs=DATE_INPUT_KW),
-        }
+        fields = ['rut','nombre','apellido_paterno','apellido_materno',
+                  'especialidad','telefono','email','numero_registro',
+                  'jornada','fecha_ingreso','activo']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Solo especialidades activas
         self.fields['especialidad'].queryset = Especialidad.objects.filter(activa=True)
+        # opcional: clases Bootstrap
+        self.fields['especialidad'].widget.attrs.setdefault('class', 'form-select')
 
 class LaboratorioForm(forms.ModelForm):
     class Meta:

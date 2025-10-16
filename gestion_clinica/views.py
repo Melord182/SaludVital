@@ -39,7 +39,8 @@ EXTENSIONES SUGERIDAS (OPCIONAL):
 """
 
 from django.db.models.deletion import ProtectedError
-
+from datetime import datetime
+from django.utils import timezone
 from rest_framework import viewsets
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -76,6 +77,7 @@ class EspecialidadViewSet(viewsets.ModelViewSet):
     serializer_class = EspecialidadSerializer
     filterset_class = EspecialidadFilter
     template_name = 'especialidad/lista.html'
+    context_object_name = 'especialidades'
     search_fields = ['nombre', 'descripcion']
     ordering_fields = ['nombre', 'fecha_creacion']
 
@@ -404,52 +406,100 @@ Agregar este código al archivo views.py
 # =============================================
 
 def consulta_lista(request):
-    """
-    Lista todas las consultas médicas.
-    """
-    consultas = ConsultaMedica.objects.all()
+    consultas = ConsultaMedica.objects.select_related('paciente', 'medico').order_by('-fecha_hora')
     return render(request, 'consulta/lista.html', {'consultas': consultas})
 
-
+# CREAR
 def consulta_crear(request):
     if request.method == 'POST':
-        form = ConsultaMedicaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Consulta médica creada exitosamente.')
-            return redirect('consulta_lista')
-    else:
-        form = ConsultaMedicaForm()
-    return render(request, 'consulta/crear.html', {'form': form})
+        # 1) Buscar FK
+        paciente_id = request.POST.get('paciente')
+        medico_id = request.POST.get('medico')
+        paciente = get_object_or_404(Paciente, pk=paciente_id, activo=True)
+        medico = get_object_or_404(Medico, pk=medico_id, activo=True)
 
+        # 2) Parsear fecha y hora ("YYYY-MM-DDTHH:MM")
+        fecha_str = request.POST.get('fecha_hora')  # ej. "2025-10-16T10:30"
+        if not fecha_str:
+            messages.error(request, 'Debes ingresar la fecha y hora.')
+        else:
+            try:
+                dt = datetime.strptime(fecha_str, '%Y-%m-%dT%H:%M')
+                # Si usas USE_TZ=True, vuelve dt consciente
+                if timezone.is_naive(dt):
+                    dt = timezone.make_aware(dt, timezone.get_current_timezone())
+            except ValueError:
+                messages.error(request, 'Formato de fecha/hora inválido.')
+                dt = None
 
+            if dt:
+                ConsultaMedica.objects.create(
+                    paciente=paciente,
+                    medico=medico,
+                    fecha_hora=dt,
+                    motivo_consulta=request.POST.get('motivo_consulta', '').strip(),
+                    diagnostico=request.POST.get('diagnostico', '').strip(),
+                    observaciones=request.POST.get('observaciones', '').strip(),
+                    estado=request.POST.get('estado', 'AGENDADA'),
+                )
+                messages.success(request, 'Consulta creada exitosamente.')
+                return redirect('consulta_lista')
+
+    # GET o POST con errores → volver a mostrar combos
+    pacientes = Paciente.objects.filter(activo=True).order_by('apellido_paterno', 'nombre')
+    medicos = Medico.objects.filter(activo=True).order_by('apellido_paterno', 'nombre')
+    return render(request, 'consulta/crear.html', {
+        'pacientes': pacientes,
+        'medicos': medicos,
+    })
+
+# EDITAR
 def consulta_editar(request, pk):
     consulta = get_object_or_404(ConsultaMedica, pk=pk)
+
     if request.method == 'POST':
-        form = ConsultaMedicaForm(request.POST, instance=consulta)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Consulta médica actualizada exitosamente.')
+        paciente_id = request.POST.get('paciente')
+        medico_id = request.POST.get('medico')
+        paciente = get_object_or_404(Paciente, pk=paciente_id, activo=True)
+        medico = get_object_or_404(Medico, pk=medico_id, activo=True)
+
+        fecha_str = request.POST.get('fecha_hora')
+        try:
+            dt = datetime.strptime(fecha_str, '%Y-%m-%dT%H:%M')
+            if timezone.is_naive(dt):
+                dt = timezone.make_aware(dt, timezone.get_current_timezone())
+        except ValueError:
+            messages.error(request, 'Formato de fecha/hora inválido.')
+            dt = None
+
+        if dt:
+            consulta.paciente = paciente
+            consulta.medico = medico
+            consulta.fecha_hora = dt
+            consulta.motivo_consulta = request.POST.get('motivo_consulta', '').strip()
+            consulta.diagnostico = request.POST.get('diagnostico', '').strip()
+            consulta.observaciones = request.POST.get('observaciones', '').strip()
+            consulta.estado = request.POST.get('estado', 'AGENDADA')
+            consulta.save()
+            messages.success(request, 'Consulta actualizada exitosamente.')
             return redirect('consulta_lista')
-    else:
-        form = ConsultaMedicaForm(instance=consulta)
-    return render(request, 'consulta/editar.html', {'form': form, 'consulta': consulta})
 
+    pacientes = Paciente.objects.filter(activo=True).order_by('apellido_paterno', 'nombre')
+    medicos = Medico.objects.filter(activo=True).order_by('apellido_paterno', 'nombre')
+    return render(request, 'consulta/editar.html', {
+        'consulta': consulta,
+        'pacientes': pacientes,
+        'medicos': medicos,
+    })
 
+# ELIMINAR
 def consulta_eliminar(request, pk):
-    """
-    Elimina una consulta médica.
-    """
     consulta = get_object_or_404(ConsultaMedica, pk=pk)
-    
     if request.method == 'POST':
         consulta.delete()
-        messages.success(request, 'Consulta médica eliminada exitosamente.')
+        messages.success(request, 'Consulta eliminada.')
         return redirect('consulta_lista')
-    
     return render(request, 'consulta/eliminar.html', {'consulta': consulta})
-
-
 # =============================================
 # VISTAS BASADAS EN TEMPLATES - TRATAMIENTO
 # =============================================

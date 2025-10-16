@@ -34,14 +34,10 @@
           </div>
 
           <div class="mb-3">
-            <label for="especialidad" class="form-label">Especialidad *</label>
-            <select class="form-select" id="especialidad" name="especialidad" required>
-              <option value="">Seleccione una especialidad</option>
-              {% for especialidad in especialidades %}
-                <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
-              {% endfor %}
-            </select>
-          </div>
+          <label for="{{ form.especialidad.id_for_label }}" class="form-label">Especialidad *</label>
+          {{ form.especialidad }}
+          {{ form.especialidad.errors }}
+        </div>
 
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono *</label>

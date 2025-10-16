@@ -25,10 +25,8 @@ El script **elimina** datos existentes (modo desarrollo). Úsalo con cuidado.
 from datetime import date, datetime, timedelta
 import random
 
-from gestion_clinica.models import (
-    Especialidad, Paciente, Medico, ConsultaMedica,
-    Tratamiento, Medicamento, RecetaMedica, Laboratorio
-)
+from gestion_clinica.models import (Especialidad, Paciente, Medico, ConsultaMedica,
+    Tratamiento, Medicamento, RecetaMedica, Laboratorio)
 
 print('Iniciando carga de datos...')
 
