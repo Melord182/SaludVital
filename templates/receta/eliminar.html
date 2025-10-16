@@ -1,50 +1,41 @@
 {% extends 'base.html' %}
-
 {% block title %}Eliminar Receta - Clínica Salud Vital{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 mx-auto">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar Eliminación</h4>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¿Está seguro de que desea eliminar esta receta?</strong>
-                </div>
-                
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Información de la Receta:</h5>
-                        <p class="card-text"><strong>Paciente:</strong> {{ receta.paciente.nombre_completo }}</p>
-                        <p class="card-text"><strong>Médico:</strong> {{ receta.medico.nombre_completo }}</p>
-                        <p class="card-text"><strong>Fecha de Emisión:</strong> {{ receta.fecha_emision|date:"d/m/Y" }}</p>
-                        <p class="card-text"><strong>Medicamentos Asociados:</strong> {{ receta.medicamentos.count }}</p>
-                        <p class="card-text"><strong>Instrucciones:</strong> {{ receta.instrucciones }}</p>
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar eliminación</h4>
+      </div>
+      <div class="card-body">
+        <p>¿Seguro que deseas eliminar la <strong>Receta #{{ receta.id }}</strong>?</p>
 
-                    </div>
-                </div>
-                
-                <p class="text-danger">
-                    <small><strong>Advertencia:</strong> Esta acción no se puede deshacer y puede afectar consultas asociadas.</small>
-                </p>
-                
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </div>
-                    
-                </form>
-            </div>
-        </div>
+        <ul class="list-unstyled">
+          <li><strong>Paciente:</strong> {{ receta.tratamiento.consulta.paciente.nombre_completo }}</li>
+          <li><strong>Médico:</strong> {{ receta.tratamiento.consulta.medico.nombre_completo }}</li>
+          <li><strong>Tratamiento:</strong> #{{ receta.tratamiento.id }}</li>
+          <li><strong>Medicamento:</strong> {{ receta.medicamento.nombre }}</li>
+          <li><strong>Dosis/Frecuencia:</strong> {{ receta.dosis }} / {{ receta.frecuencia }}</li>
+          <li><strong>Duración:</strong> {{ receta.duracion }}</li>
+          <li><strong>Cantidad total:</strong> {{ receta.cantidad_total }}</li>
+          <li><strong>Fecha emisión:</strong> {{ receta.fecha_emision|date:"d/m/Y" }}</li>
+          {% if receta.instrucciones_especiales %}
+            <li><strong>Instrucciones:</strong> {{ receta.instrucciones_especiales }}</li>
+          {% endif %}
+        </ul>
+
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </form>
+        <a href="{% url 'receta_lista' %}" class="btn btn-secondary ms-2">
+          <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

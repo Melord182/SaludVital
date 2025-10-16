@@ -1,43 +1,71 @@
 {% extends 'base.html' %}
-
 {% block title %}Editar Medicamento - Clínica Salud Vital{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card">
-            <div class="card-header bg-warning text-white">
-                <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Medicamento</h4>
+  <div class="col-md-10 mx-auto">
+    <div class="card">
+      <div class="card-header bg-warning text-white">
+        <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Medicamento #{{ medicamento.id }}</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nombre *</label>
+              <input type="text" name="nombre" class="form-control" value="{{ medicamento.nombre }}" required>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre *</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" 
-                               value="{{ medicamento.nombre }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" 
-                                  rows="3">{{ medicamento.descripcion }}</textarea>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="activo" name="activo" 
-                               {% if medicamento.activo %}checked{% endif %}>
-                        <label class="form-check-label" for="activo">Activo</label>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Guardar
-                        </button>
-                    </div>
-                </form>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Principio Activo *</label>
+              <input type="text" name="principio_activo" class="form-control" value="{{ medicamento.principio_activo }}" required>
             </div>
-        </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Presentación *</label>
+              <input type="text" name="presentacion" class="form-control" value="{{ medicamento.presentacion }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Concentración *</label>
+              <input type="text" name="concentracion" class="form-control" value="{{ medicamento.concentracion }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Laboratorio *</label>
+              <input type="text" name="laboratorio" class="form-control" value="{{ medicamento.laboratorio }}" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Stock Disponible *</label>
+              <input type="number" name="stock_disponible" class="form-control" min="0" step="1" value="{{ medicamento.stock_disponible }}" required>
+            </div>
+            <div class="col-md-4 mb-3 d-flex align-items-center gap-2">
+              <input type="checkbox" name="requiere_receta" id="requiere_receta" class="form-check-input"
+                     {% if medicamento.requiere_receta %}checked{% endif %}>
+              <label for="requiere_receta" class="form-check-label">Requiere receta</label>
+            </div>
+            <div class="col-md-4 mb-3 d-flex align-items-center gap-2">
+              <input type="checkbox" name="activo" id="activo" class="form-check-input"
+                     {% if medicamento.activo %}checked{% endif %}>
+              <label for="activo" class="form-check-label">Activo</label>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Guardar cambios
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

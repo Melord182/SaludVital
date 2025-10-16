@@ -1,66 +1,80 @@
 {% extends 'base.html' %}
-
-{% block title %}Crear Receta - Clínica Salud Vital{% endblock %}
+{% block title %}Nueva Receta - Clínica Salud Vital{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-10 mx-auto">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Receta</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="paciente" class="form-label">Paciente *</label>
-                        <select class="form-select" id="paciente" name="paciente" required>
-                            <option value="" disabled selected>Seleccione un paciente</option>
-                            {% for paciente in pacientes %}
-                                <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="medico" class="form-label">Médico *</label>
-                        <select class="form-select" id="medico" name="medico" required>
-                            <option value="" disabled selected>Seleccione un médico</option>
-                            {% for medico in medicos %}
-                                <option value="{{ medico.id }}">{{ medico.nombre }} {{ medico.apellido }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="medicamentos" class="form-label">Medicamentos *</label>
-                        <select class="form-select" id="medicamentos" name="medicamentos" multiple required>
-                            {% for medicamento in medicamentos %}
-                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }} - {{ medicamento.dosis }}</option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-text">Mantenga presionada la tecla Ctrl (Cmd en Mac) para seleccionar múltiples medicamentos.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="instrucciones" class="form-label">Instrucciones *</label>
-                        <textarea class="form-control" id="instrucciones" name="instrucciones" rows="3" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="fecha_emision" class="form-label">Fecha de Emisión *</label>
-                        <input type="date" class="form-control" id="fecha_emision" name="fecha_emision" required>
-                    </div>
+  <div class="col-md-10 mx-auto">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-prescription"></i> Nueva Receta</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Guardar
-                        </button>
-                    </div>
-                    
-                    
-                </form>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tratamiento *</label>
+              <select name="tratamiento" class="form-select" required>
+                <option value="">Seleccione...</option>
+                {% for t in tratamientos %}
+                  <option value="{{ t.id }}">
+                    Tratamiento #{{ t.id }} · {{ t.consulta.paciente.nombre_completo }} ({{ t.consulta.medico.nombre_completo }})
+                  </option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Se muestran tratamientos activos.</div>
             </div>
-        </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Medicamento *</label>
+              <select name="medicamento" class="form-select" required>
+                <option value="">Seleccione...</option>
+                {% for m in medicamentos %}
+                  <option value="{{ m.id }}">
+                    {{ m.nombre }} — {{ m.presentacion }} ({{ m.concentracion }})
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Dosis *</label>
+              <input type="text" name="dosis" class="form-control" placeholder="Ej: 1 comprimido" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Frecuencia *</label>
+              <input type="text" name="frecuencia" class="form-control" placeholder="Ej: cada 8 horas" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Duración *</label>
+              <input type="text" name="duracion" class="form-control" placeholder="Ej: 7 días" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Cantidad Total *</label>
+              <input type="number" name="cantidad_total" class="form-control" min="1" step="1" required>
+            </div>
+            <div class="col-md-8 mb-3">
+              <label class="form-label">Instrucciones Especiales</label>
+              <textarea name="instrucciones_especiales" rows="3" class="form-control" placeholder="Indicaciones adicionales (opcional)"></textarea>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'receta_lista' %}" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Guardar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

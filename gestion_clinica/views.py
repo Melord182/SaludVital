@@ -38,6 +38,7 @@ EXTENSIONES SUGERIDAS (OPCIONAL):
 - **Formularios Django**: reemplazar acceso directo a `request.POST` por `ModelForm` para validación y limpieza.
 """
 
+from django.db.models.deletion import ProtectedError
 
 from rest_framework import viewsets
 from django.shortcuts import render, redirect, get_object_or_404
@@ -56,7 +57,7 @@ from .filters import (
     ConsultaMedicaFilter, TratamientoFilter,
     MedicamentoFilter, RecetaMedicaFilter
 )
-
+from django.db.models import Count
 
 # =============================================
 # VIEWSETS PARA API REST
@@ -209,16 +210,22 @@ def especialidad_editar(request, pk):
 
 
 def especialidad_eliminar(request, pk):
-    """
-    Elimina una especialidad.
-    """
     especialidad = get_object_or_404(Especialidad, pk=pk)
-    
-    if request.method == 'POST':
-        especialidad.delete()
-        messages.success(request, 'Especialidad eliminada exitosamente.')
+
+    # Corta el flujo si está en uso (evita incluso mostrar el form)
+    if especialidad.medicos.exists():
+        messages.error(request, 'No se puede eliminar la especialidad: tiene médicos asociados. '
+                                'Reasigna sus médicos o desactívala.')
         return redirect('especialidad_lista')
-    
+
+    if request.method == 'POST':
+        try:
+            especialidad.delete()
+            messages.success(request, 'Especialidad eliminada exitosamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar la especialidad: está en uso.')
+        return redirect('especialidad_lista')
+
     return render(request, 'especialidad/eliminar.html', {'especialidad': especialidad})
 
 
@@ -283,20 +290,22 @@ def paciente_editar(request, pk):
     previsiones = Paciente.PREVISION_CHOICES
     return render(request, 'paciente/editar.html', {'paciente': paciente, 'previsiones': previsiones})
 
-
 def paciente_eliminar(request, pk):
-    """
-    Elimina un paciente.
-    """
     paciente = get_object_or_404(Paciente, pk=pk)
-    
-    if request.method == 'POST':
-        paciente.delete()
-        messages.success(request, 'Paciente eliminado exitosamente.')
-        return redirect('paciente_lista')
-    
-    return render(request, 'paciente/eliminar.html', {'paciente': paciente})
 
+    if paciente.consultas.exists():
+        messages.error(request, 'No se puede eliminar el paciente: tiene consultas asociadas.')
+        return redirect('paciente_lista')
+
+    if request.method == 'POST':
+        try:
+            paciente.delete()
+            messages.success(request, 'Paciente eliminado exitosamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar el paciente: está en uso.')
+        return redirect('paciente_lista')
+
+    return render(request, 'paciente/eliminar.html', {'paciente': paciente})
 
 # =============================================
 # VISTAS BASADAS EN TEMPLATES - MEDICO
@@ -365,16 +374,21 @@ def medico_editar(request, pk):
 
 
 def medico_eliminar(request, pk):
-    """
-    Elimina un médico.
-    """
     medico = get_object_or_404(Medico, pk=pk)
-    
-    if request.method == 'POST':
-        medico.delete()
-        messages.success(request, 'Médico eliminado exitosamente.')
+
+    if medico.consultas.exists():
+        messages.error(request, 'No se puede eliminar el médico: tiene consultas asociadas. '
+                                )
         return redirect('medico_lista')
-    
+
+    if request.method == 'POST':
+        try:
+            medico.delete()
+            messages.success(request, 'Médico eliminado exitosamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar el médico: está en uso.')
+        return redirect('medico_lista')
+
     return render(request, 'medico/eliminar.html', {'medico': medico})
 
 """
@@ -591,18 +605,21 @@ def medicamento_editar(request, pk):
     
     return render(request, 'medicamento/editar.html', {'medicamento': medicamento})
 
-
 def medicamento_eliminar(request, pk):
-    """
-    Elimina un medicamento.
-    """
     medicamento = get_object_or_404(Medicamento, pk=pk)
-    
-    if request.method == 'POST':
-        medicamento.delete()
-        messages.success(request, 'Medicamento eliminado exitosamente.')
+
+    if medicamento.recetas.exists():
+        messages.error(request, 'No se puede eliminar el medicamento: tiene recetas asociadas.')
         return redirect('medicamento_lista')
-    
+
+    if request.method == 'POST':
+        try:
+            medicamento.delete()
+            messages.success(request, 'Medicamento eliminado exitosamente.')
+        except ProtectedError:
+            messages.error(request, 'No se puede eliminar el medicamento: está en uso.')
+        return redirect('medicamento_lista')
+
     return render(request, 'medicamento/eliminar.html', {'medicamento': medicamento})
 
 

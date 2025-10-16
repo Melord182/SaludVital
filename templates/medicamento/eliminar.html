@@ -1,49 +1,36 @@
 {% extends 'base.html' %}
-
 {% block title %}Eliminar Medicamento - Clínica Salud Vital{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 mx-auto">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar Eliminación</h4>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¿Está seguro de que desea eliminar este medicamento?</strong>
-                </div>
-                
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Información del Medicamento:</h5>
-                        <p class="card-text"><strong>Nombre:</strong> {{ medicamento.nombre }}</p>
-                        <p class="card-text"><strong>Descripción:</strong> {{ medicamento.descripcion }}</p>
-                        <p class="card-text"><strong>Activo:</strong> {{ medicamento.activo|yesno:"Sí,No" }}</p>   
-                        <p class="card-text"><strong>Consultas Asociadas:</strong> {{ medicamento.consultas.count }}</p>
-                        <p class="card-text"><strong>Prescripciones Asociadas:</strong> {{ medicamento.prescripciones.count }}</p>
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar eliminación</h4>
+      </div>
+      <div class="card-body">
+        <p>¿Seguro que deseas eliminar el <strong>Medicamento #{{ medicamento.id }}</strong>?</p>
+        <ul class="list-unstyled">
+          <li><strong>Nombre:</strong> {{ medicamento.nombre }}</li>
+          <li><strong>Principio Activo:</strong> {{ medicamento.principio_activo }}</li>
+          <li><strong>Presentación / Conc.:</strong> {{ medicamento.presentacion }} / {{ medicamento.concentracion }}</li>
+          <li><strong>Laboratorio:</strong> {{ medicamento.laboratorio }}</li>
+          <li><strong>Stock:</strong> {{ medicamento.stock_disponible }}</li>
+          <li><strong>Requiere receta:</strong> {% if medicamento.requiere_receta %}Sí{% else %}No{% endif %}</li>
+          <li><strong>Estado:</strong> {% if medicamento.activo %}Activo{% else %}Inactivo{% endif %}</li>
+        </ul>
 
-                    </div>
-                </div>
-                
-                <p class="text-danger">
-                    <small><strong>Advertencia:</strong> Esta acción no se puede deshacer y puede afectar consultas asociadas.</small>
-                </p>
-                
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </form>
+        <a href="{% url 'medicamento_lista' %}" class="btn btn-secondary ms-2">
+          <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

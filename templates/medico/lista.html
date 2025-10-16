@@ -4,32 +4,43 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-heart-pulse"></i> Medicos</h2>
-    <a href="{% url 'especialidad_crear' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Nuevo Medico
+    <h2><i class="bi bi-heart-pulse"></i> Médicos</h2>
+    <a href="{% url 'medico_crear' %}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nuevo Médico
     </a>
 </div>
 
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
-                        <th>Descripción</th>
+                        <th>Especialidad</th>
+                        <th>Jornada</th>
+                        <th>Contacto</th>
                         <th>Estado</th>
-                        <th>Fecha Creación</th>
-                        <th>Acciones</th>
+                        <th>Fecha Ingreso</th>
+                        <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for medico in medicos %}
                     <tr>
                         <td>{{ medico.id }}</td>
-                        <td><strong>{{ medico.nombre }}</strong></td>
-                        <td>{{ medico.descripcion|truncatewords:10 }}</td>
+                        <td>
+                            <strong>{{ medico.nombre_completo }}</strong><br>
+                            <small class="text-muted">RUT: {{ medico.rut }}</small>
+                        </td>
+                        <td>{{ medico.especialidad.nombre }}</td>
+                        <td>{{ medico.get_jornada_display }}</td>
+                        <td>
+                            <div><i class="bi bi-telephone"></i> {{ medico.telefono }}</div>
+                            <div><i class="bi bi-envelope"></i> {{ medico.email }}</div>
+                            <div><i class="bi bi-hash"></i> Reg.: {{ medico.numero_registro }}</div>
+                        </td>
                         <td>
                             {% if medico.activo %}
                                 <span class="badge bg-success">Activo</span>
@@ -37,21 +48,19 @@
                                 <span class="badge bg-secondary">Inactivo</span>
                             {% endif %}
                         </td>
-                        <td>{{ medico.fecha_creacion|date:"d/m/Y" }}</td>
-                        <td>
-                            <a href="{% url 'medico_editar' medico.pk %}" 
-                               class="btn btn-sm btn-warning">
+                        <td>{{ medico.fecha_ingreso|date:"d/m/Y" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'medico_editar' medico.pk %}" class="btn btn-sm btn-warning" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="{% url 'medico_eliminar' medico.pk %}" 
-                               class="btn btn-sm btn-danger">
+                            <a href="{% url 'medico_eliminar' medico.pk %}" class="btn btn-sm btn-danger" title="Eliminar">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center">No hay medicos registrados.</td>
+                        <td colspan="8" class="text-center">No hay médicos registrados.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

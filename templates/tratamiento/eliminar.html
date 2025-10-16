@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Eliminar Tratamiento - Clínica Salud Vital{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="bi bi-trash"></i> Confirmar eliminación</h4>
+      </div>
+      <div class="card-body">
+        <p>¿Seguro que deseas eliminar el <strong>Tratamiento #{{ tratamiento.id }}</strong>?</p>
+        <ul class="list-unstyled">
+          <li><strong>Consulta:</strong> #{{ tratamiento.consulta.id }}</li>
+          <li><strong>Paciente:</strong> {{ tratamiento.consulta.paciente.nombre_completo }}</li>
+          <li><strong>Médico:</strong> {{ tratamiento.consulta.medico.nombre_completo }}</li>
+          <li><strong>Fecha inicio:</strong> {{ tratamiento.fecha_inicio|date:"d/m/Y" }}</li>
+          <li><strong>Fecha fin:</strong>
+            {% if tratamiento.fecha_fin %}{{ tratamiento.fecha_fin|date:"d/m/Y" }}{% else %}<span class="text-muted">En curso</span>{% endif %}
+          </li>
+        </ul>
+
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </form>
+        <a href="{% url 'tratamiento_lista' %}" class="btn btn-secondary ms-2">
+          <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

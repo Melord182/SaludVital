@@ -4,61 +4,76 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Consulta</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="paciente" class="form-label">Paciente *</label>
-                        <select class="form-select" id="paciente" name="paciente" required>
-                            <option value="">Seleccione un paciente</option>
-                            {% for paciente in pacientes %}
-                                <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido_paterno }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="medico" class="form-label">Médico *</label>
-                        <select class="form-select" id="medico" name="medico" required>
-                            <option value="">Seleccione un médico</option>
-                            {% for medico in medicos %}
-                                <option value="{{ medico.id }}">{{ medico.nombre }} {{ medico.apellido_paterno }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="fecha_hora" class="form-label">Fecha y Hora *</label>
-                        <input type="datetime-local" class="form-control" id="fecha_hora" name="fecha_hora" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="motivo" class="form-label">Motivo *</label>
-                        <textarea class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="diagnostico" class="form-label">Diagnóstico</label>
-                        <textarea class="form-control" id="diagnostico" name="diagnostico" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="tratamiento" class="form-label">Tratamiento</label>
-                        <textarea class="form-control" id="tratamiento" name="tratamiento" rows="3"></textarea>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'consulta_lista' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Guardar
-                        </button>
-                        </div>
-                        
-                </form>
-            </div>
-        </div>
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Consulta Médica</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" action="">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="paciente" class="form-label">Paciente *</label>
+            <select class="form-select" id="paciente" name="paciente" required>
+              <option value="">Seleccione un paciente</option>
+              {% for paciente in pacientes %}
+                <option value="{{ paciente.id }}">{{ paciente.nombre_completo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="medico" class="form-label">Médico *</label>
+            <select class="form-select" id="medico" name="medico" required>
+              <option value="">Seleccione un médico</option>
+              {% for medico in medicos %}
+                <option value="{{ medico.id }}">{{ medico.nombre_completo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="fecha_hora" class="form-label">Fecha y Hora *</label>
+            <input type="datetime-local" class="form-control" id="fecha_hora" name="fecha_hora" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="motivo_consulta" class="form-label">Motivo de la Consulta *</label>
+            <textarea class="form-control" id="motivo_consulta" name="motivo_consulta" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="diagnostico" class="form-label">Diagnóstico</label>
+            <textarea class="form-control" id="diagnostico" name="diagnostico" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="observaciones" class="form-label">Observaciones</label>
+            <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado *</label>
+            <select class="form-select" id="estado" name="estado" required>
+              <option value="AGENDADA" selected>Agendada</option>
+              <option value="REALIZADA">Realizada</option>
+              <option value="CANCELADA">Cancelada</option>
+              <option value="NO_ASISTIO">No Asistió</option>
+            </select>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'consulta_lista' %}" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Guardar Consulta
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
